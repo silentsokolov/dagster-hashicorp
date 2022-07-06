@@ -1,0 +1,56 @@
+---
+name: "build"
+
+on:  # yamllint disable-line rule:truthy
+  pull_request:
+  push:
+    branches: master
+
+jobs:
+  build:
+    name: Python ${{ matrix.python-version }} | dagster ${{ matrix.dagster-version}} | Ubuntu
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python-version: 3.6
+            dagster-version: "0.14.*"
+          - python-version: 3.6
+            dagster-version: "0.15.*"
+
+          - python-version: 3.7
+            dagster-version: "0.14.*"
+          - python-version: 3.7
+            dagster-version: "0.15.*"
+
+          - python-version: 3.7
+            dagster-version: "0.14.*"
+          - python-version: 3.7
+            dagster-version: "0.15.*"
+
+          - python-version: 3.7
+            dagster-version: "0.14.*"
+          - python-version: 3.7
+            dagster-version: "0.15.*"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dagster ${{ matrix.dagster-version }}
+        run: |
+          pip install dagster==${{ matrix.dagster-version }}
+          pip install hvac
+
+      - name: Run tests
+        run: |
+          make test
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1

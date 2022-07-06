@@ -1,2 +1,1 @@
-# dagster-hashicorp
-Utilities for interfacing with Hashicorp Products with Dagster
+[![build](https://github.com/silentsokolov/dagster-hashicorp/actions/workflows/build.yml/badge.svg)](https://github.com/silentsokolov/dagster-hashicorp/actions/workflows/build.yml)

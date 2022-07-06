@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 from os import PathLike
-from typing import Optional, Union
+from typing import List, Optional, Union
 
 import hvac
 from dagster import _check as check
 
-AVAILABLE_KV_VERSIONS: list[int] = [1, 2]
+AVAILABLE_KV_VERSIONS: List[int] = [1, 2]
 
 
 class AuthType(ABC):

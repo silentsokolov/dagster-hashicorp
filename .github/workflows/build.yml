@@ -24,14 +24,14 @@ jobs:
           - python-version: 3.7
             dagster-version: "0.15.*"
 
-          - python-version: 3.7
+          - python-version: 3.8
             dagster-version: "0.14.*"
-          - python-version: 3.7
+          - python-version: 3.8
             dagster-version: "0.15.*"
 
-          - python-version: 3.7
+          - python-version: 3.9
             dagster-version: "0.14.*"
-          - python-version: 3.7
+          - python-version: 3.9
             dagster-version: "0.15.*"
 
     steps:

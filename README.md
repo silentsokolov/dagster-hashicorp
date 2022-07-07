@@ -4,6 +4,7 @@
 
 [![build](https://github.com/silentsokolov/dagster-hashicorp/actions/workflows/build.yml/badge.svg)](https://github.com/silentsokolov/dagster-hashicorp/actions/workflows/build.yml)
 
+
 # dagster-hashicorp
 
 A package for integrating [Hashicorp Vault](https://www.vaultproject.io/) with [Dagster](https://dagster.io/).
@@ -22,7 +23,7 @@ pip install dagster-hashicorp
 
 # Usage Notes
 
-### Vault
+## Vault
 
 #### Auth method
 

@@ -2,7 +2,9 @@
   <img src="https://raw.githubusercontent.com/silentsokolov/dagster-hashicorp/main/docs/logo.jpg" alt="dagster-hashicorp logo" width="300"/>
 </p>
 
-[![build](https://github.com/silentsokolov/dagster-hashicorp/actions/workflows/build.yml/badge.svg)](https://github.com/silentsokolov/dagster-hashicorp/actions/workflows/build.yml)
+[![build](https://github.com/silentsokolov/dagster-hashicorp/actions/workflows/build.yml/badge.svg)](https://github.com/silentsokolov/dagster-hashicorp/actions/workflows/build.yml) [![codecov](https://codecov.io/gh/silentsokolov/dagster-hashicorp/branch/main/graph/badge.svg?token=Pz2ptd7HYU)](https://codecov.io/gh/silentsokolov/dagster-hashicorp)
+
+
 
 
 # dagster-hashicorp

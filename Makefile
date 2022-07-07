@@ -49,4 +49,4 @@ fmt:
 .PHONY: test
 
 test:
-	pytest . -s -vv
+	pytest -s -vv --cov .

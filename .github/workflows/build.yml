@@ -48,6 +48,7 @@ jobs:
           pip install dagster==${{ matrix.dagster-version }}
           pip install hvac
           pip install pytest
+          pip install pytest-cov
 
       - name: Run tests
         run: |

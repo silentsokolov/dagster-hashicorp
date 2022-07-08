@@ -106,8 +106,15 @@ def vault_resource(context):
 
             @op(required_resource_keys={"vault"})
             def example_vault_op(context):
-                return context.resources.vault.get_secret(
+                # Read
+                secret_data = context.resources.vault.read_secret(
                     secret_path="secret/data/foo/bar"
+                )
+                context.log.debug(f'Secret: {secret_data}')
+
+                # Write
+                context.resources.vault.create_or_update_secret(
+                    secret_path="secret/data/foo/bar", {'bar': 'foo'}
                 )
 
             @job(resource_defs={"vault": vault_resource})

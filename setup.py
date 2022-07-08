@@ -15,7 +15,7 @@ def get_version(package):
 
 setup(
     name="dagster-hashicorp",
-    version=get_version("hashicorp"),
+    version=get_version("dagster_hashicorp"),
     url="https://github.com/silentsokolov/dagster-hashicorp",
     license="MIT",
     description="Package for integrating Hashicorp Vault with Dagster.",
@@ -39,5 +39,10 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+    ],
+    keywords=[
+        "dagster",
+        "hashicorp",
+        "vault",
     ],
 )

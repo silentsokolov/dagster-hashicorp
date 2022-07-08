@@ -186,61 +186,130 @@ def test_vault_kubernetes_pass_path(mock_hvac):
 
 
 @mock.patch("dagster_hashicorp.vault.secrets.hvac")
-def test_vault_get_secret_invalid_path(mock_hvac):
+def test_vault_read_secret_invalid_path(mock_hvac):
     mock_client = mock.MagicMock()
     mock_hvac.Client.return_value = mock_client
 
     vault = Vault(auth_type=TokenAuth("s.token"), url="localhost:8200")
 
     with pytest.raises(ValueError, match=r"Invalid secret path"):
-        vault.get_secret("foo/bar/secret")
+        vault.read_secret("foo/bar/secret")
 
 
 @mock.patch("dagster_hashicorp.vault.secrets.hvac")
-def test_vault_get_secret_kv2(mock_hvac):
+def test_vault_read_secret_kv2(mock_hvac):
     mock_client = mock.MagicMock()
     mock_hvac.Client.return_value = mock_client
+    expected_secret = {"secret_key": "secret_value"}
+    mock_client.secrets.kv.v2.read_secret_version.return_value = {
+        "request_id": "00000000-0000-0000-0000-000000000000",
+        "lease_id": "",
+        "renewable": False,
+        "lease_duration": 0,
+        "data": {
+            "data": expected_secret,
+            "metadata": {
+                "created_time": "1970-01-01T00:00:00.0Z",
+                "deletion_time": "",
+                "destroyed": False,
+                "version": 1,
+            },
+        },
+    }
 
     vault = Vault(auth_type=TokenAuth("s.token"), url="localhost:8200")
 
-    vault.get_secret(secret_path="secret/data/foo/bar")
+    secret = vault.read_secret(secret_path="secret/data/foo/bar")
     mock_client.secrets.kv.v2.read_secret_version.assert_called_once_with(
         mount_point="secret", path="foo/bar", version=None
     )
+    assert expected_secret == secret
 
 
 @mock.patch("dagster_hashicorp.vault.secrets.hvac")
-def test_vault_get_secret_kv2_with_version(mock_hvac):
+def test_vault_read_secret_kv2_with_version(mock_hvac):
     mock_client = mock.MagicMock()
     mock_hvac.Client.return_value = mock_client
 
     vault = Vault(auth_type=TokenAuth("s.token"), url="localhost:8200")
 
-    vault.get_secret(secret_path="secret/data/foo/bar", secret_version=3)
+    vault.read_secret(secret_path="secret/data/foo/bar", secret_version=3)
     mock_client.secrets.kv.v2.read_secret_version.assert_called_once_with(
         mount_point="secret", path="foo/bar", version=3
     )
 
 
 @mock.patch("dagster_hashicorp.vault.secrets.hvac")
-def test_vault_get_secret_kv1(mock_hvac):
+def test_vault_read_secret_kv1(mock_hvac):
     mock_client = mock.MagicMock()
     mock_hvac.Client.return_value = mock_client
+    expected_secret = {"secret_key": "secret_value"}
+    mock_client.secrets.kv.v1.read_secret.return_value = {
+        "request_id": "00000000-0000-0000-0000-000000000000",
+        "lease_id": "",
+        "renewable": False,
+        "lease_duration": 1,
+        "data": expected_secret,
+    }
 
     vault = Vault(auth_type=TokenAuth("s.token"), url="localhost:8200", kv_engine_version=1)
 
-    vault.get_secret(secret_path="secret/data/foo/bar")
+    secret = vault.read_secret(secret_path="secret/data/foo/bar")
     mock_client.secrets.kv.v1.read_secret.assert_called_once_with(
         mount_point="secret", path="foo/bar"
     )
+    assert expected_secret == secret
 
 
 @mock.patch("dagster_hashicorp.vault.secrets.hvac")
-def test_vault_get_secret_kv1_with_version(mock_hvac):
+def test_vault_read_secret_kv1_with_version(mock_hvac):
     mock_client = mock.MagicMock()
     mock_hvac.Client.return_value = mock_client
 
     vault = Vault(auth_type=TokenAuth("s.token"), url="localhost:8200", kv_engine_version=1)
 
     with pytest.raises(ValueError, match=r"Only KV engine V2 can used the secret version"):
-        vault.get_secret(secret_path="secret/data/foo/bar", secret_version=3)
+        vault.read_secret(secret_path="secret/data/foo/bar", secret_version=3)
+
+
+@mock.patch("dagster_hashicorp.vault.secrets.hvac")
+def test_vault_create_or_update_secret_invalid_path(mock_hvac):
+    mock_client = mock.MagicMock()
+    mock_hvac.Client.return_value = mock_client
+
+    vault = Vault(auth_type=TokenAuth("s.token"), url="localhost:8200")
+
+    with pytest.raises(ValueError, match=r"Invalid secret path"):
+        vault.create_or_update_secret("foo/bar/secret", {"foo": "bar"})
+
+
+@mock.patch("dagster_hashicorp.vault.secrets.hvac")
+def test_vault_create_or_update_secret_kv2(mock_hvac):
+    mock_client = mock.MagicMock()
+    mock_hvac.Client.return_value = mock_client
+
+    vault = Vault(auth_type=TokenAuth("s.token"), url="localhost:8200")
+
+    vault.create_or_update_secret(
+        secret_path="secret/data/foo/bar",
+        secret={"foo": "bar"},
+    )
+    mock_client.secrets.kv.v2.create_or_update_secret.assert_called_once_with(
+        path="foo/bar", secret={"foo": "bar"}, mount_point="secret"
+    )
+
+
+@mock.patch("dagster_hashicorp.vault.secrets.hvac")
+def test_vault_create_or_update_secret_kv1(mock_hvac):
+    mock_client = mock.MagicMock()
+    mock_hvac.Client.return_value = mock_client
+
+    vault = Vault(auth_type=TokenAuth("s.token"), url="localhost:8200", kv_engine_version=1)
+
+    vault.create_or_update_secret(
+        secret_path="secret/data/foo/bar",
+        secret={"foo": "bar"},
+    )
+    mock_client.secrets.kv.v1.create_or_update_secret.assert_called_once_with(
+        path="foo/bar", secret={"foo": "bar"}, mount_point="secret"
+    )

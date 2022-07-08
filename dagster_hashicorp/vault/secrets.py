@@ -152,7 +152,7 @@ class Vault:
 
         return self.client
 
-    def get_secret(
+    def read_secret(
         self,
         secret_path: str,
         secret_version: Optional[int] = None,
@@ -186,3 +186,36 @@ class Vault:
             )
 
         return response["data"] if self.kv_engine_version == 1 else response["data"]["data"]
+
+    def create_or_update_secret(
+        self,
+        secret_path: str,
+        secret: dict,
+    ):
+        """
+        Create a new version of a secret at the specified location.
+
+        Args:
+            secret_path (str): The path of the secret. Format: <mount_point>/data/<path>
+            secret (dict): The contents of the "secret" dict will be stored and returned on read.
+        """
+        check.str_param(secret_path, "secret_path")
+        check.dict_param(secret, "secret")
+
+        try:
+            mount_point, path = secret_path.split("/data/", 1)
+        except ValueError as exc:
+            raise ValueError(
+                f"Invalid secret path: {secret_path}.  Expected: '<mount_point>/data/<path>'"
+            ) from exc
+
+        if self.kv_engine_version == 1:
+            response = self.get_client().secrets.kv.v1.create_or_update_secret(
+                path=path, secret=secret, mount_point=mount_point
+            )
+        else:
+            response = self.get_client().secrets.kv.v2.create_or_update_secret(
+                path=path, secret=secret, mount_point=mount_point
+            )
+
+        return response

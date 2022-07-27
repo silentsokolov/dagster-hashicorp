@@ -4,9 +4,6 @@
 
 [![build](https://github.com/silentsokolov/dagster-hashicorp/actions/workflows/build.yml/badge.svg)](https://github.com/silentsokolov/dagster-hashicorp/actions/workflows/build.yml) [![codecov](https://codecov.io/gh/silentsokolov/dagster-hashicorp/branch/main/graph/badge.svg?token=Pz2ptd7HYU)](https://codecov.io/gh/silentsokolov/dagster-hashicorp)
 
-
-
-
 # dagster-hashicorp
 
 A package for integrating [Hashicorp Vault](https://www.vaultproject.io/) with [Dagster](https://dagster.io/).
@@ -47,11 +44,11 @@ def example_vault_op(context):
     secret_data = context.resources.vault.read_secret(
         secret_path="secret/data/foo/bar"
     )
-    context.log.debug(f'Secret: {secret_data}')
+    context.log.debug(f"Secret: {secret_data}")
 
     # Write
     context.resources.vault.create_or_update_secret(
-        secret_path="secret/data/foo/bar", {'bar': 'foo'}
+        secret_path="secret/data/foo/bar", {"bar": "foo"}
     )
 
 
@@ -82,6 +79,12 @@ example_job.execute_in_process(
                 "config": {
                     "url": "vault-host:8200",
                     "auth_type": {"token": {"token": {"env": "VAULT_TOKEN"}}},
+                    # or
+                    # "auth_type": {"userpass": {"username": {"env": "VAULT_USER"}, "password": {"env": "VAULT_PASS"}}},
+                    # or
+                    # "auth_type": {"approle": {"role_id": {"env": "VAULT_ROLE_ID"}, "secret_id": {"env": "VAULT_SECRET_ID"}}},
+                    # or
+                    # "auth_type": {"kubernetes": {"role": {"env": "VAULT_ROLE"}, "jwt_path": {"env": "VAULT_JWT_PATH"}}},
                 }
             }
         }

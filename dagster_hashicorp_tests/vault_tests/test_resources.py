@@ -1,5 +1,9 @@
 from dagster import build_init_resource_context
-from dagster.core.test_utils import environ
+
+try:
+    from dagster._core.test_utils import environ
+except ImportError:
+    from dagster.core.test_utils import environ
 
 from dagster_hashicorp.vault.resources import vault_resource
 from dagster_hashicorp.vault.secrets import (

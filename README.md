@@ -40,6 +40,8 @@ from dagster_hashicorp.vault import vault_resource
 
 @op(required_resource_keys={"vault"})
 def example_vault_op(context):
+    # Path of secret uses pattern <mount_point>/data/<path>
+
     # Read
     secret_data = context.resources.vault.read_secret(
         secret_path="secret/data/foo/bar"

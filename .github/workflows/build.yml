@@ -34,6 +34,8 @@ jobs:
             dagster-version: "0.15.*"
           - python-version: 3.9
             dagster-version: "1.0.*"
+          - python-version: 3.9
+            dagster-version: "1.1.*"
 
     steps:
       - name: Checkout
